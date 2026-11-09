@@ -1,6 +1,6 @@
 """Build the 42 x 36 follow-up methylation matrix for the locked panel.
 
-Apples-to-apples with baseline. The baseline pipeline applied a >=90% cross-
+Matched to the baseline matrix. The baseline pipeline applied a >=90% cross-
 patient coverage filter when building metilene_full_matrix_filtered.bed, so only
 a defined subset of CpGs ended up in dmr36_matrix.csv. To make FU comparable we
 lock that exact CpG set (extracted from the existing Metilene bed) and average

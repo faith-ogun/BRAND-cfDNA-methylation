@@ -324,10 +324,8 @@ def run_cox_regression(results_df):
     cox_df = results_df[['PFS Months', 'prob_nonresponder']].copy()
     cox_df['predicted_NR'] = results_df['predicted'].values
 
-    # PFS event indicator. The 'PFS' column from the source xlsx is already a
-    # numeric 1/0 indicator (1 = progressed, 0 = censored). An earlier version
-    # of this script compared it against the string 'Censored', which never
-    # matched and silently flagged all patients as events. Bug fixed 2026-05-22.
+    # PFS event indicator. The 'PFS' column from the source xlsx is a numeric
+    # 1/0 indicator (1 = progressed, 0 = censored).
     cox_df['pfs_event'] = pd.to_numeric(results_df['PFS'], errors='coerce').astype('Int64')
     cox_df = cox_df.dropna()
     cox_df['pfs_event'] = cox_df['pfs_event'].astype(int)

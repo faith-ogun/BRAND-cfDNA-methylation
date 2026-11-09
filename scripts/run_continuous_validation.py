@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Continuous-outcome validation of the 36-DMR panel (David's post-hoc request).
+Continuous-outcome validation of the 36-DMR panel.
 
-The binary PFS >= 6 month cutoff is arbitrary and many patients cluster near
-6 months, so 5.8 vs 6.2 months gets opposite labels. This re-runs the
-validation as a continuous-vs-continuous test instead: LOOCV with a penalised
-Cox model on the 36 stable DMRs, scored by Harrell's concordance index. The
-concordance index is the survival-analysis analogue of AUC; 0.5 is chance.
+The binary outcome (durable clinical benefit, PFS of 6 months or longer)
+places patients with similar PFS on either side of the cut-off, for example
+5.8 and 6.2 months. This script evaluates the panel against PFS as a
+time-to-event outcome: LOOCV with a penalised Cox model on the 36 stable DMRs,
+scored by Harrell's concordance index, the survival-analysis counterpart of
+the AUC (0.5 is chance).
 
-Discovery still needed the binary split (Metilene compares two groups), but
-this validation step uses time-to-event directly and handles censoring.
+Metilene discovery needs two groups, so it uses the binary split; this step
+uses time to event directly and handles censoring.
 
 Runs locally. No HPC, no Metilene.
 

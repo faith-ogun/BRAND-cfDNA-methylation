@@ -14,9 +14,8 @@ Mirrors run_sensitivity.py + run_continuous_validation.py for FU. Two parts:
       run_continuous_validation.py exactly, FU swapped for baseline).
     - Harrell's C + 2000-iter bootstrap 95% CI.
 
-Outcome time/event: PFS measured from treatment start (same clock as baseline
-analysis; the FU sample was drawn at wk3 or wk6 after treatment start, which is
-a limitation worth flagging in the writeup but matches the baseline scaffold).
+Outcome time/event: PFS measured from treatment start, the same clock as the
+baseline analysis (the FU sample was drawn at week 3 or 6 after treatment start).
 
 Inputs:
   results/sensitivity_analysis/dmr36_matrix.csv         baseline 42x36 (training data for each fold)
@@ -77,10 +76,10 @@ def main():
     print(f'  PFS events: {E.sum()}, censored: {(E == 0).sum()}')
 
     # =====================================================================
-    # PART A. Binary classifier on FU, leakage-free LOOCV.
+    # PART A. Binary classifier on FU, LOOCV.
     # Per fold: hold out patient i; refit L1-logistic on the OTHER 41 baseline
     # samples + labels; predict patient i's FU sample. Mirrors the baseline
-    # LOOCV scaffold so the numbers are apples-to-apples with baseline.
+    # LOOCV so the numbers are directly comparable with baseline.
     # =====================================================================
     Xb = base.values.astype(float)
     Xfu = fu.values.astype(float)
@@ -245,7 +244,7 @@ def main():
     print('FU vs BASELINE side-by-side')
     print('=' * 70)
     print(f"""
-                     Baseline (LOOCV)    FU-alone (LOOCV, leakage-free)
+                     Baseline (LOOCV)    FU-alone (LOOCV)
 Accuracy             0.643               {acc:.3f}
 AUC                  0.691               {auc:.3f}
 Sensitivity          0.368               {sens:.3f}

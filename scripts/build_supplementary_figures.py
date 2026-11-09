@@ -155,7 +155,7 @@ def forest_figure():
     leg_bbox = legend.get_window_extent().transformed(ax.transAxes.inverted())
     n_sig = int((df["q_BH"] < 0.05).sum())
     summary = (
-        f"Wilcoxon signed-rank, FU minus baseline\n"
+        f"Mann-Whitney U, FU minus baseline\n"
         f"BH correction across 36 regions\n"
         f"{n_sig}/{n} regions reach q < 0.05\n"
         f"min raw p = {df['p_raw'].min():.4f}, "

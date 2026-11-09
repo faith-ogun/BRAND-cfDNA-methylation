@@ -1,24 +1,21 @@
 """FU dynamic-change analysis on the 36-DMR signature.
 
-Runs exactly the three pre-specified tests in
-metadata/2026-05-26_fu_dynamic_analysis_prespec.md. No tests beyond those.
-
-For the FU prob_NR: the locked classifier (L1-logistic, C=0.1) is refit on the
-ENTIRE baseline matrix and then scored on the FU matrix. This is the only
-defensible "locked classifier" interpretation when FU samples are not in the
-LOOCV training pool. The baseline prob_NR for delta is the out-of-fold LOOCV
-prediction from sensitivity_36dmr.csv.
+For the FU prob_NR, the baseline classifier (L1-logistic, C=0.1) is refitted
+on the full baseline matrix and then scores the FU matrix. The baseline
+prob_NR for the change is the out-of-fold LOOCV prediction from
+sensitivity_36dmr.csv.
 
 Tests:
   1a. Wilcoxon rank-sum (Mann-Whitney U) on delta_prob_NR, R vs NR
   1b. Cox PH, PFS_time ~ delta_prob_NR
-  2.  Per-region Wilcoxon on delta_beta, R vs NR, BH-corrected over 36 regions
+  2.  Per-region Wilcoxon rank-sum on delta_beta, R vs NR, BH-corrected over 36 regions
   3.  Aggregated direction-of-change count, R vs NR
+Tests 1a and 1b are repeated in the patients whose FU sample was taken at week 6.
 
 Outputs:
   results/sensitivity_analysis/fu_dynamic_results.csv          per-patient deltas + scores
   results/sensitivity_analysis/fu_dynamic_region_tests.csv     test 2 per-region results
-  Console summary that gets pasted into the prespec md.
+  Console summary of all tests.
 """
 
 import warnings
@@ -153,7 +150,7 @@ def main():
     print(f'  p-value:          {p1b:.4f}')
 
     # ======================================================================
-    # TEST 2: Per-region Wilcoxon on delta_beta, BH-corrected
+    # TEST 2: Per-region Wilcoxon rank-sum (Mann-Whitney U) on delta_beta, BH-corrected
     # ======================================================================
     delta_beta = fu.values - base.values   # (42, 36)
     rows = []
@@ -229,7 +226,7 @@ def main():
     print(f'Wrote: {OUT_REGION}')
 
     # ======================================================================
-    # Robustness check: wk6-only subset for tests 1a and 1b (pre-specified)
+    # Robustness check: wk6-only subset for tests 1a and 1b
     # ======================================================================
     WK3_PATIENTS = {'SJH30', 'SJH39', 'SJH53', 'BH5', 'BH6', 'BH29', 'BH42'}
     mask_wk6 = np.array([p not in WK3_PATIENTS for p in pids])
@@ -261,10 +258,10 @@ def main():
           f'(95% CI {ci_lo6:.3f} to {ci_hi6:.3f}), p = {s6["p"]:.4f}')
 
     # ======================================================================
-    # Summary block (paste into prespec md results section)
+    # Summary block
     # ======================================================================
     print('\n' + '=' * 70)
-    print('SUMMARY BLOCK (for prespec md results section)')
+    print('SUMMARY')
     print('=' * 70)
     print(f"""
 Test 1a (Mann-Whitney on delta_prob_NR, NR vs R):

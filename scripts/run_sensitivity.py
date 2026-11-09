@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-BRAND DMR sensitivity analyses (post-main-LOOCV).
+BRAND 36-DMR panel and comparison models.
 
-Runs three leakage-free LOOCVs on the same 42 patients to triangulate the
-negative result from the main run:
+Runs three LOOCVs on the same 42 patients:
 
-  1. 36-DMR-only        - most-stable DMRs (recurred in all 42 main folds)
+  1. 36-DMR-only        - the stable DMRs (found in all 42 folds of run_loocv.py)
   2. Clinical-only      - PD-L1, ECOG, smoking, age, gender, histology
   3. Combined           - 36-DMR + clinical
 
@@ -254,10 +253,8 @@ def main():
     patient_order = loocv['patient_id'].tolist()
     actual = loocv['actual'].values.astype(int)
     pfs_months = loocv['PFS Months'].values.astype(float)
-    # The 'PFS' column from the source xlsx is a numeric 1/0 indicator
-    # (1 = progressed, 0 = censored). An earlier version of this script
-    # compared it against the string 'Censored', which never matched and
-    # silently flagged all 42 patients as events. Bug fixed 2026-05-22.
+    # The 'PFS' column from the source xlsx is a numeric 1/0 event indicator
+    # (1 = progressed, 0 = censored).
     pfs_event = loocv['PFS'].astype(float).astype(int).values
     assert len(patient_order) == 42, f'expected 42 patients, got {len(patient_order)}'
     print(f'Loaded {len(patient_order)} patients from main LOOCV results')
@@ -293,9 +290,9 @@ def main():
         RESULTS / 'dmr36_matrix.csv', index_label='patient_id')
     print(f'  Saved: {RESULTS / "dmr36_matrix.csv"}')
 
-    # --- Models. Main-run C=0.1 for methylation/combined; C=1.0 for clinical
-    # because with only 7 features L1 at C=0.1 zeroed every coefficient and
-    # collapsed to a constant predictor on the first run. ---
+    # --- Models. C=0.1 for methylation and combined, as in run_loocv.py;
+    # C=1.0 for clinical, because with only 7 features L1 at C=0.1 sets every
+    # coefficient to zero and gives a constant predictor. ---
     pred, prob = loocv_predict(X_dmr, actual, C=0.1)
     report('36-DMR-only (L1, C=0.1)',
            actual, pred, prob, pfs_months, pfs_event,

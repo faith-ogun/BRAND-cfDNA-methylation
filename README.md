@@ -17,7 +17,7 @@ This repository covers the methylation analyses only. The exhaled breath condens
 
 1. **DMR discovery inside cross-validation.** In each of 42 leave-one-out folds, Metilene v0.2-9 is re-run on the 41 training patients to find differentially methylated regions (DMRs) between patients with and without durable clinical benefit (DCB, progression-free survival (PFS) of 6 months or longer).
 2. **36-DMR panel.** The 36 DMRs found in all 42 folds form the panel. It is evaluated out of fold with an L1-penalised logistic regression (C = 0.1, scored by AUC) and a ridge-penalised Cox model (penaliser 0.5, scored by Harrell's C-index), each with 2,000-iteration bootstrap confidence intervals. Panel membership draws on all 42 patients' labels, so, as the manuscript states, these estimates are internally cross-validated rather than externally validated.
-3. **On-treatment samples.** The same 36 regions are measured in the on-treatment samples on the baseline CpG set. For Figure 2D, each patient's on-treatment sample is scored by the classifier trained on the other 41 baseline samples. For the dynamic analysis (Figure 2E), the baseline classifier is refitted on all 42 baseline samples to score the on-treatment samples, each patient's baseline score is their out-of-fold value, and the pre-specified tests relate the change in score to PFS.
+3. **On-treatment samples.** The same 36 regions are measured in the on-treatment samples on the baseline CpG set. For Figure 2D, each patient's on-treatment sample is scored by the classifier trained on the other 41 baseline samples. For the dynamic analysis (Figure 2E), the baseline classifier is refitted on all 42 baseline samples to score the on-treatment samples, each patient's baseline score is their out-of-fold value, and the dynamic-change tests relate the change in score to PFS.
 
 ## Manuscript items and the scripts that produce them
 
@@ -29,7 +29,7 @@ This repository covers the methylation analyses only. The exhaled breath condens
 | Supplementary Figure 3: baseline continuous risk score | `scripts/run_continuous_validation.py`, then `scripts/build_supplementary_figures.py` | `continuous_validation.csv`\*, `figures/supplementary/supplement_km_36dmr.png` |
 | On-treatment 42 x 36 methylation matrix | `scripts/build_fu_dmr36_matrix.py` | `dmr36_matrix_fu.csv`\* |
 | Figure 2D and Supplementary Table 4 (36-DMR row) | `scripts/run_fu_alone_battery.py` | `results/sensitivity_analysis/fu_alone_battery.csv` |
-| Figure 2E and the pre-specified dynamic tests | `scripts/run_fu_dynamic_analysis.py` | `fu_dynamic_results.csv`\*, `results/sensitivity_analysis/fu_dynamic_region_tests.csv` |
+| Figure 2E and the dynamic-change tests | `scripts/run_fu_dynamic_analysis.py` | `fu_dynamic_results.csv`\*, `results/sensitivity_analysis/fu_dynamic_region_tests.csv` |
 | Supplementary Table 2 (36-DMR row) | `scripts/test_ph_assumption_methylation.py` | `results/sensitivity_analysis/ph_assumption_methylation.txt` |
 | Figure 2, panels A to E | `scripts/build_paper_figure_composite.py` | `figures/figure2_composite.png` |
 | Supplementary Figure 2 and Supplementary Table 3 | `scripts/build_supplementary_figures.py`, then `scripts/annotate_36dmrs.py` | `figures/supplementary/supplement_forest_36dmr.png`, `figures/supplementary/supplement_table_36dmr.csv` |
@@ -98,7 +98,7 @@ python scripts/build_fu_dmr36_matrix.py
 # 6. On-treatment classifier and Cox models
 python scripts/run_fu_alone_battery.py
 
-# 7. Pre-specified dynamic-change tests
+# 7. Dynamic-change tests (Figure 2E)
 python scripts/run_fu_dynamic_analysis.py
 
 # 8. Proportional hazards tests (Supplementary Table 2)

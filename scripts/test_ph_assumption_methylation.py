@@ -6,12 +6,12 @@ manuscript; Model B below is its 36-DMR row.
 Two models are tested:
 
   Model A: baseline 36-DMR continuous risk score (the C-index 0.700 model).
-           The published model is a ridge-penalised Cox fitted inside LOOCV.
+           The model is a ridge-penalised Cox fitted inside LOOCV.
            For the assumption test we use the out-of-fold risk score as a
            single covariate, which is the standard way to test PH for a
            penalised multi-feature model (testing all 36 coefficients
            separately with 42 patients and 31 events would be badly
-           underpowered and is not what the paper claims).
+           underpowered).
 
   Model B: dynamic change model (the HR 0.30 result). Single covariate:
            per-patient change in 36-DMR non-responder probability between
